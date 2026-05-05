@@ -4,6 +4,11 @@ import { cookies } from 'next/headers';
 /**
  * Supabase client for use in Server Components / Route Handlers / Server
  * Actions. Reads cookies for the user session.
+ *
+ * Auth-cookie security: @supabase/ssr writes session cookies with
+ * httpOnly=true, secure=true (prod), and sameSite='lax' by default.
+ * Don't override those in `setAll` — losing httpOnly puts the JWT in
+ * reach of any XSS, and losing secure leaks it on http downgrade.
  */
 export const createClient = async () => {
   const cookieStore = await cookies();
