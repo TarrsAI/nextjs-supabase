@@ -8,9 +8,9 @@ Deviating is a bug.
 
 | Concern | Choice | Don't substitute |
 |---|---|---|
-| Data access | **`@supabase/ssr` + `@supabase/supabase-js`** (PostgREST) | No Drizzle / Prisma / Sequelize / direct `pg` connection. The data layer is `supabase-js` because this template's value-add is the Supabase platform (RLS, realtime, storage, auth). ORM-on-top defeats that — `nextjs-postgres` is for the ORM path. |
+| Data access | **`@supabase/ssr` + `@supabase/supabase-js`** (PostgREST) | No Drizzle / Prisma / Sequelize / direct `pg` connection. The data layer is `supabase-js` because this template's value-add is the Supabase platform (RLS, realtime, storage, auth). ORM-on-top defeats that — if you need an ORM-driven stack, pair `nextjs-standalone` with `express-postgres` over HTTP. |
 | Authorization | **RLS policies in `supabase/migrations/`** | Do NOT add `if (post.author_id === user.id)` checks in Server Action / RSC code. The policy is the source of truth; an in-code duplicate drifts the day the policy changes. (UI nicety like hiding a delete button for non-authors is fine — actual enforcement is the policy.) |
-| Auth | Supabase Auth (magic-link out of the box) via `@supabase/ssr` | Don't add NextAuth / Clerk / Auth.js / a custom bcrypt+JWT stack — `nextjs-postgres` exists for that. |
+| Auth | Supabase Auth (magic-link out of the box) via `@supabase/ssr` | Don't add NextAuth / Clerk / Auth.js / a custom bcrypt+JWT stack — if you need that pattern, pair `nextjs-standalone` with `express-postgres`. |
 | Migrations | `supabase/migrations/*.sql` via Supabase CLI | No Alembic / Sequelize / dbmate. |
 | Validation | Length-cap inline in Server Actions (`String(formData.get(...)).slice(0, 200)`) | Add Zod if a resource gets complex; current scale doesn't justify the dep weight. |
 | Mutation surface | **Server Actions only** | Don't add `app/api/*` route handlers for mutations the form-action shape already covers. Add a route handler only when an external service needs to webhook you. |

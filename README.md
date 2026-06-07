@@ -5,9 +5,8 @@ both auth AND data. No separate backend, no Express in the middle.
 React Server Components handle reads, Server Actions handle writes,
 RLS policies handle authorization.
 
-If you want a separate Express + Postgres backend instead, see
-`nextjs-postgres`. If you want a frontend that calls some other
-API service over HTTP, see `nextjs-standalone`.
+If you want a thin frontend that talks to a separate backend over
+HTTP (Express + Postgres, FastAPI, anyone else), see `nextjs-standalone`.
 
 ## What's included
 
