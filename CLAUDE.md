@@ -99,6 +99,7 @@ Anywhere you need to bypass RLS for a server-owned operation (cron sweepers, sys
 - ❌ Don't override the auth-cookie defaults in `setAll` (httpOnly / secure / sameSite).
 - ❌ Don't use the browser client (`createBrowserClient`) for sensitive operations — use the server client from RSC.
 - ❌ Don't accept `next` query params on `/auth/callback` without the `isSafeNext` check — open-redirect is real.
+- ❌ Don't hand-write a `pnpm-workspace.yaml` / `allowBuilds:` block to silence pnpm's "Ignored build scripts" warning. Native-build approval is already declared in `package.json` → `pnpm.onlyBuiltDependencies` (`sharp`, `unrs-resolver`). If you add another dep with a build script, append its name to that array — don't improvise a workspace file.
 
 ## What to do when in doubt
 
