@@ -1,26 +1,19 @@
 import type { NextConfig } from 'next';
 
-// Strict security headers + CSP. Tweak `connect-src` if your app talks
-// to APIs other than Supabase. The starter ships with the safest
-// baseline for a typical Tarrs project.
-const isDev = process.env.NODE_ENV !== 'production';
-const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
-
-const csp = [
-  `default-src 'self'`,
-  `script-src 'self' ${isDev ? "'unsafe-eval'" : ''} 'unsafe-inline'`,
-  `style-src 'self' 'unsafe-inline'`,
-  `img-src 'self' data: blob: https:`,
-  `font-src 'self' data:`,
-  `connect-src 'self' ${supabaseHost} wss://*.supabase.co`,
-  `frame-ancestors 'none'`,
-  `form-action 'self'`,
-  `base-uri 'self'`,
-  `object-src 'none'`,
-]
-  .filter(Boolean)
-  .join('; ');
-
+// Security headers — the pragmatic baseline for a Tarrs starter.
+//
+// Deliberately NO Content-Security-Policy and NO X-Frame-Options here:
+//  - The Tarrs workspace previews your app inside an iframe; a CSP
+//    `frame-ancestors` / X-Frame-Options header blocks that preview
+//    (and any other embed) with a hard-to-debug blank pane.
+//  - A strict CSP also silently breaks the first third-party thing you
+//    add (an analytics snippet, an API call, a font) with console-only
+//    errors — including Supabase Realtime's websocket if the allowlist
+//    drifts. For a starter, that costs more than it protects.
+// When your app is production-hardened and you know your origins, add
+// a CSP back — and if you want click-jacking protection while staying
+// embeddable by the Tarrs preview, use:
+//   `frame-ancestors 'self' https://tarrs.io https://*.tarrs.io`
 const nextConfig: NextConfig = {
   // Tarrs sandbox runs the container behind an ALB on port 3000.
   async headers() {
@@ -28,8 +21,6 @@ const nextConfig: NextConfig = {
       {
         source: '/:path*',
         headers: [
-          { key: 'Content-Security-Policy', value: csp },
-          { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           {
